@@ -1,16 +1,8 @@
 --[[
   @description Vinyl Cue Sheet
-  @version 0.1.0-dev
+  @version 0.1.0
   @author John Wright
-  @about
-    Generates a vinyl cue-sheet from project regions/markers arranged in ruler
-    lanes: one lane of regions defines the sides, another defines the track
-    titles. Header details come from global settings; artist/album/audio-format
-    are read from the project. The cue sheet is written as HTML and converted to
-    PDF when a converter (wkhtmltopdf or headless Chrome) is available.
-
-    A companion action, "Vinyl Cue Sheet: Settings", edits the persistent global
-    configuration (uses ReaImGui when installed, otherwise a native dialog).
+  @link https://github.com/jg-wright/reaper-vinyl-cue-sheet
   @provides
     [main] vinyl_cue_sheet_settings.lua
     lib/config.lua
@@ -20,6 +12,23 @@
     lib/regions.lua
     lib/render_format.lua
     lib/timecode.lua
+  @about
+    # Vinyl Cue Sheet
+
+    Generates a vinyl cue-sheet from project regions/markers arranged in ruler
+    lanes: one lane of regions defines the sides (e.g. !A, !B), another defines
+    the track titles. Header details come from global settings; artist, album
+    and audio format are read from the project. The cue sheet is written as HTML
+    and converted to PDF when a converter (wkhtmltopdf or headless Chrome) is
+    available on the system.
+
+    Actions:
+    - Vinyl Cue Sheet — generate the cue sheet for the current project.
+    - Vinyl Cue Sheet: Settings — edit the persistent global settings.
+
+    The settings editor uses ReaImGui when installed, otherwise a native dialog.
+  @changelog
+    Initial release.
 --]]
 
 local sep = package.config:sub(1, 1)
