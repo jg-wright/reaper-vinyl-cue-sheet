@@ -93,3 +93,7 @@ for t in render_format model html pdf; do lua "Vinyl Cue Sheet/test/${t}_spec.lu
 ```
 
 See [PLAN.md](PLAN.md) for the design and milestones.
+
+## License
+
+[MIT](LICENSE) © John Wright
