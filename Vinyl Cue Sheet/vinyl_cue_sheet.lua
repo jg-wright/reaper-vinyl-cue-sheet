@@ -8,7 +8,11 @@
     titles. Header details come from global settings; artist/album/audio-format
     are read from the project. The cue sheet is written as HTML and converted to
     PDF when a converter (wkhtmltopdf or headless Chrome) is available.
+
+    A companion action, "Vinyl Cue Sheet: Settings", edits the persistent global
+    configuration (uses ReaImGui when installed, otherwise a native dialog).
   @provides
+    [main] vinyl_cue_sheet_settings.lua
     lib/config.lua
     lib/html.lua
     lib/pdf.lua
