@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/gui/lua:5.3.6-luarocks-noble
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Syntax check
+        run: | # shell
+          for f in "Vinyl Cue Sheet"/*.lua "Vinyl Cue Sheet"/lib/*.lua; do
+            luac -p "$f"
+          done
+
+      - name: Run tests
+        run: | # shell
+          for t in render_format model html pdf; do
+            lua "Vinyl Cue Sheet/test/${t}_spec.lua"
+          done

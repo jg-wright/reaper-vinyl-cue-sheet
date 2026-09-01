@@ -1,0 +1,48 @@
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - index.xml
+      - README.md
+      - PLAN.md
+      - .github/**
+
+# Push the regenerated index.xml back to main. Uses a GitHub App token so the
+# bot can push to a protected branch (configure the app to bypass PR rules).
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PEM }}
+          permission-contents: write
+
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - run: gem install reapack-index
+
+      - name: Configure git identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: | # shell
+          slug='${{ steps.app-token.outputs.app-slug }}[bot]'
+          user_id=$(gh api "/users/${slug}" --jq .id)
+          git config user.name "$slug"
+          git config user.email "${user_id}+${slug}@users.noreply.github.com"
+
+      - name: Build index.xml
+        run: reapack-index --commit --no-progress
+
+      - name: Push
+        run: git push
