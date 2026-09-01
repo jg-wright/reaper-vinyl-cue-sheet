@@ -11,9 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # - name: Install Lua
-      #   run: sudo apt-get update && sudo apt-get install -y lua5.4
-
       - name: Syntax check
         run: | # shell
           for f in "Vinyl Cue Sheet"/*.lua "Vinyl Cue Sheet"/lib/*.lua; do
