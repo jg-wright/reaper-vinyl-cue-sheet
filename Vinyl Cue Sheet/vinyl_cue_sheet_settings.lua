@@ -56,69 +56,58 @@ local function save(values)
 end
 
 --------------------------------------------------------------------------------
--- ReaImGui UI
+-- ReaImGui UI (raw reaper.ImGui_* API; avoids the shim's version gating)
 --------------------------------------------------------------------------------
 
 local function run_imgui()
-  package.path = reaper.ImGui_GetBuiltinPath() .. "/?.lua;" .. package.path
-  local ImGui = require("imgui")("0.8")
-
-  local ctx = ImGui.CreateContext("Vinyl Cue Sheet Settings")
+  local ctx = reaper.ImGui_CreateContext("Vinyl Cue Sheet Settings")
   local values = config.load()
   local status = ""
-
-  local function separator_text(title)
-    if ImGui.SeparatorText then
-      ImGui.SeparatorText(ctx, title)
-    else
-      ImGui.Separator(ctx)
-      ImGui.Text(ctx, title)
-    end
-  end
+  local cond_first = reaper.ImGui_Cond_FirstUseEver()
 
   local function timecode_combo(field)
-    local current = 0
-    local labels = {}
+    local current, labels = 0, {}
     for i, opt in ipairs(TIMECODES) do
       labels[#labels + 1] = opt[2]
       if opt[1] == values[field[1]] then current = i - 1 end
     end
-    local changed, idx = ImGui.Combo(ctx, field[2], current, table.concat(labels, "\0") .. "\0")
+    local changed, idx = reaper.ImGui_Combo(ctx, field[2], current, table.concat(labels, "\0") .. "\0")
     if changed then values[field[1]] = TIMECODES[idx + 1][1] end
   end
 
   local function frame()
-    ImGui.SetNextWindowSize(ctx, 560, 640, ImGui.Cond_FirstUseEver)
-    local visible, open = ImGui.Begin(ctx, "Vinyl Cue Sheet Settings", true)
+    reaper.ImGui_SetNextWindowSize(ctx, 560, 640, cond_first)
+    local visible, open = reaper.ImGui_Begin(ctx, "Vinyl Cue Sheet Settings", true)
     if visible then
-      ImGui.PushItemWidth(ctx, -220)
+      reaper.ImGui_PushItemWidth(ctx, -220)
       for _, f in ipairs(FIELDS) do
         if f.section then
-          separator_text(f.section)
+          reaper.ImGui_Separator(ctx)
+          reaper.ImGui_Text(ctx, f.section)
         elseif f[3] == "text" then
-          local changed, nv = ImGui.InputText(ctx, f[2], values[f[1]] or "")
+          local changed, nv = reaper.ImGui_InputText(ctx, f[2], values[f[1]] or "")
           if changed then values[f[1]] = nv end
         elseif f[3] == "bool" then
-          local changed, nv = ImGui.Checkbox(ctx, f[2], values[f[1]] == "true")
+          local changed, nv = reaper.ImGui_Checkbox(ctx, f[2], values[f[1]] == "true")
           if changed then values[f[1]] = nv and "true" or "false" end
         elseif f[3] == "timecode" then
           timecode_combo(f)
         end
       end
-      ImGui.PopItemWidth(ctx)
+      reaper.ImGui_PopItemWidth(ctx)
 
-      ImGui.Separator(ctx)
-      if ImGui.Button(ctx, "Save") then
+      reaper.ImGui_Separator(ctx)
+      if reaper.ImGui_Button(ctx, "Save") then
         save(values)
         status = "Saved."
       end
-      ImGui.SameLine(ctx)
-      if ImGui.Button(ctx, "Close") then open = false end
+      reaper.ImGui_SameLine(ctx)
+      if reaper.ImGui_Button(ctx, "Close") then open = false end
       if status ~= "" then
-        ImGui.SameLine(ctx)
-        ImGui.TextColored(ctx, 0x66CC66FF, status)
+        reaper.ImGui_SameLine(ctx)
+        reaper.ImGui_TextColored(ctx, 0x66CC66FF, status)
       end
-      ImGui.End(ctx)
+      reaper.ImGui_End(ctx)
     end
     if open then reaper.defer(frame) end
   end
@@ -170,7 +159,7 @@ end
 
 --------------------------------------------------------------------------------
 
-if reaper.APIExists("ImGui_GetBuiltinPath") then
+if reaper.APIExists("ImGui_CreateContext") then
   run_imgui()
 else
   run_fallback()
