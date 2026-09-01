@@ -6,6 +6,7 @@ on:
       - README.md
       - PLAN.md
       - .github/**
+  workflow_dispatch:
 
 # Push the regenerated index.xml back to main. Uses a GitHub App token so the
 # bot can push to a protected branch (configure the app to bypass PR rules).
@@ -42,7 +43,7 @@ jobs:
           git config user.email "${user_id}+${slug}@users.noreply.github.com"
 
       - name: Build index.xml
-        run: reapack-index --commit --no-progress
+        run: reapack-index --commit --no-progress --name "Vinyl Cue Sheet"
 
       - name: Push
         run: git push
