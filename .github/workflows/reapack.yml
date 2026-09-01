@@ -1,5 +1,3 @@
-name: ReaPack index
-
 on:
   push:
     branches: [main]
