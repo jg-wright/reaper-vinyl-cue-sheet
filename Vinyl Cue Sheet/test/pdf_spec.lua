@@ -1,3 +1,4 @@
+-- @noindex
 -- Offline test of the PDF module: pure command builders + a real conversion
 -- through wkhtmltopdf (injected exec/exists, so no REAPER needed).
 -- Run with: lua "Vinyl Cue Sheet/test/pdf_spec.lua"

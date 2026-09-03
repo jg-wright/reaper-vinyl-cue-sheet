@@ -1,3 +1,4 @@
+-- @noindex
 -- Persistent global configuration via REAPER ExtState.
 
 local M = {}

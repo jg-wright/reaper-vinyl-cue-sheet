@@ -1,3 +1,4 @@
+-- @noindex
 -- Project metadata and render information.
 
 local render_format = require("lib.render_format")

@@ -1,3 +1,4 @@
+-- @noindex
 -- Decodes the base64 RENDER_FORMAT sink configuration.
 --
 -- The config begins with a 4-byte fourcc (the container name stored

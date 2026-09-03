@@ -1,3 +1,4 @@
+-- @noindex
 -- Offline test of the HTML renderer + a visual sample.
 -- Run with: lua "Vinyl Cue Sheet/test/html_spec.lua"
 

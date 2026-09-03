@@ -1,3 +1,4 @@
+-- @noindex
 -- Pure HTML renderer for the vinyl cue sheet (no REAPER dependency).
 -- Mirrors the example: bold-label header blocks, per-side heading + grey
 -- filename + a bordered "# | Title | Start | End | Length" table.

@@ -57,4 +57,6 @@ is missing the package is silently skipped and `index.xml` comes out empty. CI m
 install pandoc and pass `--name`. See
 [.github/workflows/reapack.yml](.github/workflows/reapack.yml). When adding a
 `lib/*.lua` file, also add it to the `@provides` list in
-[vinyl_cue_sheet.lua](Vinyl%20Cue%20Sheet/vinyl_cue_sheet.lua).
+[vinyl_cue_sheet.lua](Vinyl%20Cue%20Sheet/vinyl_cue_sheet.lua), and add a
+`-- @noindex` line at the top so `reapack-index` doesn't treat it (or the
+`test/*.lua` files) as a standalone package and warn about a missing `@version`.

@@ -1,3 +1,4 @@
+-- @noindex
 -- HTML -> PDF conversion by shelling out, with an open-in-default-app helper.
 -- Command builders are pure and OS-parameterised so they can be tested offline;
 -- the REAPER-specific bits (ExecProcess, file_exists, GetOS) are injectable.

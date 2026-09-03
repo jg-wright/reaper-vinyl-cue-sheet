@@ -1,3 +1,4 @@
+-- @noindex
 -- Offline test of regions.build_model against a mock of the real project layout.
 -- Not shipped; run with: lua "Vinyl Cue Sheet/test/model_spec.lua"
 

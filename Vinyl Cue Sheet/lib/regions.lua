@@ -1,3 +1,4 @@
+-- @noindex
 -- Enumerate project regions/markers with their ruler-lane assignment.
 
 local M = {}

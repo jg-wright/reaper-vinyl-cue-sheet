@@ -1,3 +1,4 @@
+-- @noindex
 -- Timecode formatting via REAPER's project-aware formatter.
 
 local M = {}

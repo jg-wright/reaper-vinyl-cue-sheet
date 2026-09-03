@@ -1,3 +1,4 @@
+-- @noindex
 -- Offline test of render_format.decode.
 -- Run with: lua "Vinyl Cue Sheet/test/render_format_spec.lua"
 
