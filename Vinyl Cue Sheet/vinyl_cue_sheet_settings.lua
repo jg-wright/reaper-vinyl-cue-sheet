@@ -22,8 +22,6 @@ local FIELDS = {
   { section = "Lanes" },
   { "sides_lane", "Sides lane (number or name)", "text" },
   { "tracks_lane", "Tracks lane (number or name)", "text" },
-  { "side_prefix", "Side name prefix", "text" },
-  { "side_name_template", "Side name template", "text" },
   { section = "Output" },
   { "timecode_mode", "Timecode", "timecode" },
   { "render_filename_pattern", "Render filename ($author $title $side $ext)", "text" },

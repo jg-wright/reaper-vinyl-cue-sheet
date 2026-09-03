@@ -64,14 +64,34 @@ function M.resolve_lane_spec(spec)
   return nil
 end
 
-local EPS = 1e-6
-
-local function strip_prefix(name, prefix)
-  if prefix ~= "" and name:sub(1, #prefix) == prefix then
-    return name:sub(#prefix + 1)
-  end
-  return name
+-- True if the region with this displayed index number has at least one track
+-- assigned in the project's Region Render Matrix.
+function M.region_in_render_matrix(region_number)
+  return reaper.EnumRegionRenderMatrix(0, region_number, 0) ~= nil
 end
+
+-- Diagnostic listing every region in the sides lane and whether it is assigned
+-- in the Region Render Matrix. Shown when no sides are detected.
+function M.diagnose_sides(cfg)
+  local sides_lane = M.resolve_lane_spec(cfg.sides_lane)
+  if not sides_lane then
+    return ("Sides lane %q could not be resolved to a lane number."):format(cfg.sides_lane)
+  end
+  local lines = {}
+  for _, rm in ipairs(M.enumerate()) do
+    if rm.lane == sides_lane and rm.is_region then
+      lines[#lines + 1] = string.format("  region #%d %q -> render matrix: %s",
+        rm.number, rm.name, M.region_in_render_matrix(rm.number) and "assigned" or "NOT assigned")
+    end
+  end
+  if #lines == 0 then
+    return ("No regions at all were found in sides lane %q."):format(cfg.sides_lane)
+  end
+  return "Regions in the sides lane (a side must be assigned a track in the Region Render Matrix):\n"
+    .. table.concat(lines, "\n")
+end
+
+local EPS = 1e-6
 
 local function substitute(pattern, subs)
   return (pattern:gsub("%$(%w+)", function(key)
@@ -96,12 +116,11 @@ function M.build_model(cfg, meta)
 
   local sides, track_items = {}, {}
   for _, rm in ipairs(items) do
-    if sides_lane and rm.lane == sides_lane and rm.is_region then
-      local letter = strip_prefix(rm.name, cfg.side_prefix)
+    if sides_lane and rm.lane == sides_lane and rm.is_region
+        and M.region_in_render_matrix(rm.number) then
       sides[#sides + 1] = {
         raw_name = rm.name,
-        letter = letter,
-        name = string.format(cfg.side_name_template, letter),
+        name = rm.name,
         start_pos = rm.start_pos,
         end_pos = rm.end_pos,
         tracks = {},
@@ -135,7 +154,7 @@ function M.build_model(cfg, meta)
       project = meta.project,
       title = meta.title,
       author = meta.author,
-      side = side.letter,
+      side = side.name,
       region = side.raw_name,
       ext = meta.ext,
     })

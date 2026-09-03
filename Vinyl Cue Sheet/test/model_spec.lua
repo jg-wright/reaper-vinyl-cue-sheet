@@ -8,16 +8,21 @@ local DATA = {
   { 2, false, 0,   0,   "!" },
   { 0, true,  2,   100, "Blue" },
   { 2, false, 2,   2,   "#Blue|PERFORMER=Borehead" },
-  { 1, true,  2,   200, "!A" },
+  { 1, true,  2,   200, "Side A" },
   { 0, true,  100, 200, "Heft" },
   { 2, false, 100, 100, "#Heft|PERFORMER=Borehead" },
   { 0, true,  200, 300, "Static" },
   { 2, false, 200, 200, "#Static|PERFORMER=Borehead" },
-  { 1, true,  200, 400, "!B" },
+  { 1, true,  200, 400, "Side B" },
   { 0, true,  300, 400, "Sour" },
   { 2, false, 300, 300, "#Sour|PERFORMER=Borehead" },
   { 2, false, 400, 400, "@4|PERFORMER=Borehead" },
+  { 1, true,  400, 500, "Side C (not in render matrix)" },
 }
+
+-- EnumProjectMarkers3 returns markrgnindexnumber = i + 1, so Side A -> 4,
+-- Side B -> 9; both are assigned tracks in the render matrix, Side C is not.
+local RENDER_MATRIX = { [4] = true, [9] = true }
 
 reaper = {
   GetExtState = function() return "" end,
@@ -34,6 +39,12 @@ reaper = {
   end,
   GetRegionOrMarker = function(_, i) return i + 1 end,
   GetRegionOrMarkerInfo_Value = function(_, rm) return DATA[rm][1] end,
+  EnumRegionRenderMatrix = function(_, region_number, rendertrack)
+    if rendertrack == 0 and RENDER_MATRIX[region_number] then
+      return {} -- stand-in MediaTrack
+    end
+    return nil
+  end,
   GetSetProjectInfo = function() return 0 end,
   GetSetProjectInfo_String = function() return false, "" end,
 }
@@ -45,11 +56,11 @@ local cfg = config.load()
 local model = regions.build_model(cfg, { project = "Borehead - 4", title = "4", author = "Borehead", ext = "wav" })
 
 assert(model.sides_lane == 1 and model.tracks_lane == 0, "lane resolution")
-assert(#model.sides == 2, "two sides")
+assert(#model.sides == 2, "two sides (Side C excluded: not in render matrix)")
 
 local a = model.sides[1]
-assert(a.name == "Side A" and a.raw_name == "!A", "side A name")
-assert(a.render_filename == "Borehead_4_Side_A_MASTER.wav", "side A filename: " .. a.render_filename)
+assert(a.name == "Side A" and a.raw_name == "Side A", "side A name")
+assert(a.render_filename == "Borehead_4_Side A_MASTER.wav", "side A filename: " .. a.render_filename)
 assert(#a.tracks == 2, "side A track count")
 assert(a.tracks[1].title == "Blue" and a.tracks[1].number == 1, "A track1")
 assert(a.tracks[1].start_rel == 0 and a.tracks[1].end_rel == 98 and a.tracks[1].length == 98, "A track1 times")

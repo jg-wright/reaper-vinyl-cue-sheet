@@ -14,17 +14,17 @@ M.DEFAULTS = {
   client = "",
 
   -- Region/marker classification. Lane may be a number ("0") or a lane name.
+  -- A region in the sides lane is treated as a side only when it is assigned at
+  -- least one track in the project's Region Render Matrix; its name is used verbatim.
   sides_lane = "1",
   tracks_lane = "0",
-  side_prefix = "!", -- optional convention: "!A"/"!B" -> "Side A"/"Side B"
-  side_name_template = "Side %s",
 
   -- Formatting
   timecode_mode = "5", -- format_timestr_pos mode: 5 = h:m:s:f (frames)
 
   -- Render / output
   audio_format_override = "",
-  render_filename_pattern = "$author_$title_Side_$side_MASTER.$ext",
+  render_filename_pattern = "$author_$title_$side_MASTER.$ext",
   output_dir = "",
   open_after_export = "true",
 

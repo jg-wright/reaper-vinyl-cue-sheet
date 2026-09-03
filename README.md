@@ -36,9 +36,9 @@ This installs two actions:
 The script reads two configurable **ruler lanes** (managed via REAPER's Ruler
 Lane Manager). Lanes can be referenced by number (default) or by name.
 
-- **Sides lane** (default lane `1`): one region per side. Names use a prefix
-  convention, e.g. `!A`, `!B`, which becomes `Side A`, `Side B` (configurable
-  prefix and template).
+- **Sides lane** (default lane `1`): one region per side. A region counts as a
+  side only when it is assigned at least one track in REAPER's **Region Render
+  Matrix**; its region name is used verbatim (e.g. name it `Side A`).
 - **Tracks lane** (default lane `0`): one region or marker per track. Each track
   is assigned to the side whose time range contains it; numbering and timecodes
   reset at the start of each side.
@@ -69,7 +69,6 @@ Edit with **Vinyl Cue Sheet: Settings** (persisted via REAPER ExtState):
 | --- | --- |
 | Pre-Master, Engineer, Phone, Email, Client | Header details |
 | Sides lane / Tracks lane | Lane number or name |
-| Side name prefix / template | e.g. prefix `!`, template `Side %s` |
 | Timecode | Frames (`h:m:s:f`, default), Time, Seconds, Measures.beats |
 | Render filename pattern | Per-side filename (see tokens below) |
 | Audio format override | Used if auto-detection is incomplete |
@@ -79,9 +78,9 @@ Edit with **Vinyl Cue Sheet: Settings** (persisted via REAPER ExtState):
 
 ### Render-filename tokens
 
-`$author` `$title` `$project` `$side` (letter) `$region` (raw side name) `$ext`
+`$author` `$title` `$project` `$side` (side region name) `$region` (same) `$ext`
 
-Default: `$author_$title_Side_$side_MASTER.$ext`
+Default: `$author_$title_$side_MASTER.$ext`
 
 ## Development
 

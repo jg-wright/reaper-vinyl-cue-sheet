@@ -83,8 +83,9 @@ local function main()
 
   local model = regions.build_model(cfg, meta)
   if #model.sides == 0 then
+    reaper.ShowConsoleMsg(regions.diagnose_sides(cfg) .. "\n")
     reaper.MB(
-      ("No side regions found in lane %q.\n\nPut side regions (e.g. !A, !B) in the sides lane and track regions/markers in the tracks lane, then run again.")
+      ("No side regions found in lane %q.\n\nEach side must be a region in the sides lane that is assigned at least one track in the Render dialog's Region Render Matrix. See the ReaScript console for a per-region breakdown.")
         :format(cfg.sides_lane),
       "Vinyl Cue Sheet", 0)
     return
