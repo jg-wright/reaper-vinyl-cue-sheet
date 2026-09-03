@@ -1,6 +1,6 @@
 --[[
   @description Vinyl Cue Sheet
-  @version 0.1.0
+  @version 1.0.0
   @author John Wright
   @link https://github.com/jg-wright/reaper-vinyl-cue-sheet
   @provides
