@@ -24,7 +24,6 @@ M.DEFAULTS = {
 
   -- Render / output
   audio_format_override = "",
-  render_filename_pattern = "$author_$title_$side_MASTER.$ext",
   output_dir = "",
   open_after_export = "true",
 

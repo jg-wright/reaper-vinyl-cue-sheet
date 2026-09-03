@@ -24,7 +24,6 @@ local FIELDS = {
   { "tracks_lane", "Tracks lane (number or name)", "text" },
   { section = "Output" },
   { "timecode_mode", "Timecode", "timecode" },
-  { "render_filename_pattern", "Render filename ($author $title $side $ext)", "text" },
   { "audio_format_override", "Audio format override", "text" },
   { "output_dir", "Output directory", "text" },
   { "pdf_converter", "PDF converter template ({in} {out})", "text" },

@@ -46,7 +46,13 @@ reaper = {
     return nil
   end,
   GetSetProjectInfo = function() return 0 end,
-  GetSetProjectInfo_String = function() return false, "" end,
+  GetSetProjectInfo_String = function(_, key)
+    if key == "RENDER_PATTERN" then return true, "$author_$title_$region_MASTER" end
+    return false, ""
+  end,
+  ResolveWildcards = function(_, _, str)
+    return (str:gsub("%$author", "Borehead"):gsub("%$title", "4"):gsub("%$project", "Borehead - 4"))
+  end,
 }
 
 local config = require("lib.config")

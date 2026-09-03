@@ -70,17 +70,17 @@ Edit with **Vinyl Cue Sheet: Settings** (persisted via REAPER ExtState):
 | Pre-Master, Engineer, Phone, Email, Client | Header details |
 | Sides lane / Tracks lane | Lane number or name |
 | Timecode | Frames (`h:m:s:f`, default), Time, Seconds, Measures.beats |
-| Render filename pattern | Per-side filename (see tokens below) |
 | Audio format override | Used if auto-detection is incomplete |
 | Output directory | Defaults to the project folder |
 | PDF converter template | Custom converter command using `{in}` / `{out}` |
 | Open after export | Open the result when done |
 
-### Render-filename tokens
+### Per-side render filename
 
-`$author` `$title` `$project` `$side` (side region name) `$region` (same) `$ext`
-
-Default: `$author_$title_$side_MASTER.$ext`
+The filename shown for each side mirrors REAPER's Render dialog **File name**
+field (`RENDER_PATTERN`): its wildcards (`$region`, `$project`, `$author`,
+`$title`, date, etc.) are resolved for that side's region, with the render
+extension appended. If no render pattern is set, the region name is used.
 
 ## Development
 

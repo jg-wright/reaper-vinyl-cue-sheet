@@ -93,18 +93,31 @@ end
 
 local EPS = 1e-6
 
-local function substitute(pattern, subs)
-  return (pattern:gsub("%$(%w+)", function(key)
-    return subs[key] or ("$" .. key)
-  end))
+-- Per-side render filename, mirroring REAPER's Render dialog "File name" field
+-- (RENDER_PATTERN). Region- and render-context wildcards are filled from the known
+-- side and format (ResolveWildcards can't resolve those without a render in progress);
+-- REAPER resolves the rest ($project/$author/$title/date/etc.) at the side start.
+function M.render_filename(side, ext)
+  local ok, pattern = reaper.GetSetProjectInfo_String(0, "RENDER_PATTERN", "", false)
+  if not ok or pattern == "" then
+    return side.name
+  end
+  pattern = pattern:gsub("%$regionnumber", tostring(side.number or ""))
+    :gsub("%$region", side.name)
+    :gsub("%$format", ext or "")
+  local resolved = reaper.ResolveWildcards(0, side.start_pos, pattern, "")
+  if ext and ext ~= "" then
+    resolved = resolved .. "." .. ext
+  end
+  return resolved
 end
 
 -- Build the cue-sheet model: sides (from the sides lane) each containing the
 -- tracks (from the tracks lane) that start within the side, with per-track times
 -- relative to the side start and per-side track numbering.
 --
---   meta = { project, title, author } (for render-filename substitution)
---   returns { sides = { { name, letter, raw_name, start_pos, end_pos,
+--   meta = { ext } (render extension for the per-side render filename)
+--   returns { sides = { { name, raw_name, number, start_pos, end_pos,
 --                         render_filename, tracks = { { number, title,
 --                         start_rel, end_rel, length } } } },
 --            sides_lane, tracks_lane }
@@ -121,6 +134,7 @@ function M.build_model(cfg, meta)
       sides[#sides + 1] = {
         raw_name = rm.name,
         name = rm.name,
+        number = rm.number,
         start_pos = rm.start_pos,
         end_pos = rm.end_pos,
         tracks = {},
@@ -150,14 +164,7 @@ function M.build_model(cfg, meta)
       }
     end
 
-    side.render_filename = substitute(cfg.render_filename_pattern, {
-      project = meta.project,
-      title = meta.title,
-      author = meta.author,
-      side = side.name,
-      region = side.raw_name,
-      ext = meta.ext,
-    })
+    side.render_filename = M.render_filename(side, meta.ext)
   end
 
   return { sides = sides, sides_lane = sides_lane, tracks_lane = tracks_lane }
